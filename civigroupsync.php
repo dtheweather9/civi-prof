@@ -1,5 +1,5 @@
 <?php
-  	$bpprof_baseurl = str_replace("/wp-content/plugins/bp-civiprof","", getcwd());
+  	$bpprof_baseurl = str_replace("/wp-content/plugins/civi-prof","", getcwd());
 		include_once($bpprof_baseurl . '/wp-blog-header.php');
 	add_action('bpcivi_updatefriends_hook','bpcivi_updategroups()');
 	function bpcivi_updategroups() {
