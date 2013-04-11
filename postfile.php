@@ -1,7 +1,7 @@
 <?php
 //Get Root Location
 $bppostfile_rLoc_cwd = getcwd();
-$bppostfile_rLoc = str_replace("/wp-content/plugins/bp-civiprof","/", $bppostfile_rLoc_cwd);
+$bppostfile_rLoc = str_replace("/wp-content/plugins/civi-prof","/", $bppostfile_rLoc_cwd);
 //Include statements
   include_once($bppostfile_rLoc."/wp-content/plugins/civicrm/civicrm.settings.php");
 	include_once($bppostfile_rLoc."/wp-content/plugins/civicrm/civicrm/CRM/Core/Config.php");
