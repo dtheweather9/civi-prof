@@ -42,7 +42,7 @@ if (isset($_FILES['file']['name'])) {
 	$bpcivi_allowedExts = array("jpg", "jpeg", "gif", "png","JPG","JPEG","GIF", "PNG");
 	$bpcivi_extension = end(explode(".", $_FILES['file']['name']));
 	$bppostfile_location_cwd = getcwd();
-	$bppostfile_location = str_replace("/wp-content/plugins/bp-civiprof","/wp-content/plugins/files/civicrm/custom/", $bppostfile_location_cwd);
+	$bppostfile_location = str_replace("/wp-content/plugins/civi-prof","/wp-content/plugins/files/civicrm/custom/", $bppostfile_location_cwd);
 	if ((($_FILES['file']['type'] == "image/gif")
 	|| ($_FILES['file']['type'] == "image/jpeg")
 	|| ($_FILES['file']['type'] == "image/png")
@@ -86,15 +86,6 @@ echo " File is too large";
 //print_r($_POST);
 //echo "</pre>";
 
-
-
-
-
-
-
-
-
-
 // Form Section
 echo '<div id="bpcivi_imageedit">';
 	echo "here is the photo nav page";
@@ -137,7 +128,7 @@ echo '<div id="bpcivi_imageedit">';
 			echo "<p> Note: All images must be less than 7MB, Print Ready, and either a jpg, jpeg, gif, or png.  </p>";
 		echo "<img src=" . $bpcivi_img . ' style="width:150px; margin-bottom:10px;">';
 			//echo '<form action="" method="post" enctype="multipart/form-data">';
-			echo '<form action="' . site_url() . "/wp-content/plugins/bp-civiprof/postfile.php" . '" method="post" enctype="multipart/form-data">';
+			echo '<form action="' . site_url() . "/wp-content/plugins/civi-prof/postfile.php" . '" method="post" enctype="multipart/form-data">';
 			echo '<input type="hidden" name="hvurls" value=' . curPageURL() . '>';
 			echo '<input type="hidden" name="bprof_cid" value=' . $bprof_cid . '>';
 			echo '<input type="hidden" name="bprof_url" value=' . get_site_url() . '>';
