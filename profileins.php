@@ -11,10 +11,10 @@ License: GPL2
 
 //Add Profile Edit
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-require_once(ABSPATH . 'wp-content/plugins/bp-civiprof/profileedit.php');
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/profileedit.php');
 
 //Add Image Edit
-require_once(ABSPATH . 'wp-content/plugins/bp-civiprof/civieditphoto.php');
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/civieditphoto.php');
 
 function bpcivi_display_prof() {
 //echo "this is the content that takes place after the profile";
@@ -74,7 +74,7 @@ function bpcivi_editphoto() {
 			echo "<p> Note: All images must be less than 7MB, Print Ready, and either a jpg, jpeg, gif, or png.  </p>";
 		echo "<img src=" . $bpcivi_img . ' style="width:150px; margin-bottom:10px;">';
 			//echo '<form action="' . curPageURL() . '" method="post" enctype="multipart/form-data">';
-			echo '<form action="' . site_url() . "/wp-content/plugins/bp-civiprof/postfile.php" . '" method="post" enctype="multipart/form-data">';
+			echo '<form action="' . site_url() . "/wp-content/plugins/civi-prof/postfile.php" . '" method="post" enctype="multipart/form-data">';
 			echo '<input type="hidden" name="hvurls" value=' . curPageURL() . '>';
 			echo '<input type="hidden" name="bprof_cid" value=' . $bprof_cid . '>';
 			echo '<input type="hidden" name="bprof_url" value=' . get_site_url() . '>';
@@ -111,21 +111,21 @@ function curPageURL() {
 }
 
 //Schedule Running of the civifriends program
-	//$bpprof_baseurl = str_replace("/wp-content/plugins/bp-civiprof","", getcwd());
-	//include_once($bpprof_baseurl . "/wp-content/plugins/bp-civiprof/civifriend.php");
+	//$bpprof_baseurl = str_replace("/wp-content/plugins/bcivi-prof","", getcwd());
+	//include_once($bpprof_baseurl . "/wp-content/plugins/civi-prof/civifriend.php");
 
 
 
 //Add menu section for the general options
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-require_once(ABSPATH . 'wp-content/plugins/bp-civiprof/civigenmenu.php');
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/civigenmenu.php');
 require_once(ABSPATH . WPINC . '/pluggable.php');
 add_options_page(__('Buddypress Civicrm General Settings','menu-bpcivi'), __('Bp-Civi General','menu-bpcivi'), 'manage_options', 'bpcivisettings', 'bpcivi_settings_page');
 
 
 //Add menu section for the groups page:
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-require_once(ABSPATH . 'wp-content/plugins/bp-civiprof/civigroupmenu.php');
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/civigroupmenu.php');
 require_once(ABSPATH . WPINC . '/pluggable.php');
 add_options_page(__('Buddypress Civicrm Group Settings','menu-bpcivigroup'), __('Bp-Civi Groups','menu-bpcivigroup'), 'manage_options', 'bpcivigroupsettings', 'bpcivi_group_settings_page');
 
