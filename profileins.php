@@ -3,7 +3,7 @@
 Plugin Name: Buddypress Civicrm Syncs
 Plugin URI: http://github.com/dtheweather9/civi-prof/
 Description: A plugin to connect Civicrm and Buddypress
-Version: 0.0122
+Version: 0.0123
 Author: Dan Pastuf
 Author URI: http://www.danpastuf.com
 License: GPL2
