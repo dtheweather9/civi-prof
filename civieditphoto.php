@@ -29,13 +29,11 @@ function bpcivi_image_page() {
 
 function bpcivi_photonavpage() {
 //Post Section
-//Get Root Location
-$bppostfile_rLoc_cwd = getcwd();
-$bppostfile_rLoc = str_replace("/wp-content/plugins/bp-civiprof","/", $bppostfile_rLoc_cwd);
+
 //Include statements
-	include_once($bppostfile_rLoc."/wp-content/plugins/civicrm/civicrm.settings.php");
-	include_once($bppostfile_rLoc."/wp-content/plugins/civicrm/civicrm/CRM/Core/Config.php");
-	include_once($bppostfile_rLoc."/wp-content/plugins/civicrm/civicrm/api/api.php");
+	include_once(ABSPATH ."/wp-content/plugins/civicrm/civicrm.settings.php");
+	include_once(ABSPATH ."/wp-content/plugins/civicrm/civicrm/CRM/Core/Config.php");
+	include_once(ABSPATH ."/wp-content/plugins/civicrm/civicrm/api/api.php");
 
 //Run look for uploading file
 if (isset($_FILES['file']['name'])) {
@@ -78,7 +76,7 @@ if (isset($_FILES['file']['name'])) {
 	} else	{
 	echo "Invalid file";
 if ($_FILES['file']['size'] < 7000000) {
-echo " File is too large";
+//echo " File is too large"; -Replaced thi
 }
 	}
 }
@@ -91,65 +89,42 @@ echo '<div id="bpcivi_imageedit">';
 	echo "here is the photo nav page";
 // Function will be into the member change as an item on the profile sub-nav
 //Include statements
-	include_once(getcwd()."/wp-content/plugins/civicrm/civicrm.php");
-	include_once(getcwd()."/wp-content/plugins/civicrm/civicrm.settings.php");
-	include_once(getcwd()."/wp-content/plugins/civicrm/civicrm/CRM/Core/Config.php");
-	include_once(getcwd()."/wp-content/plugins/civicrm/civicrm/api/api.php");
-
+	include_once(ABSPATH . "/wp-content/plugins/civicrm/civicrm.php");
+	include_once(ABSPATH . "/wp-content/plugins/civicrm/civicrm.settings.php");
+	include_once(ABSPATH . "/wp-content/plugins/civicrm/civicrm/CRM/Core/Config.php");
+	include_once(ABSPATH . "/wp-content/plugins/civicrm/civicrm/api/api.php");
 //Get Contact ID
 	$bpcivi_wpresult = get_current_user_id();
 	$params_ciddet = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','uf_id' => $bpcivi_wpresult, 'domain_id' => 1);
 	$bpciviapi_result = civicrm_api('UFMatch', 'get', $params_ciddet);
-	$bprof_cid = $bpciviapi_result['values'][3]['contact_id'];
+	$bprof_cid = $bpciviapi_result['values'][3]['contact_id']; //Current Civicrm Member ID
 
 //Get Contact ID's image_URL
-	$params = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,'contact_id' => $bprof_cid,);
-	$bpcivi_contacturlarray = civicrm_api('Contact', 'get', $params);
+	$bpciviapi_contactparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,'contact_id' => $bprof_cid,);
+	$bpcivi_contacturlarray = civicrm_api('Contact', 'get', $bpciviapi_contactparams);
 
-//If Image URL is blacnk set the image as the blank image
-	if (empty($bpcivi_contacturlarray['values'][0]['image_URL'])) {
+//If Image URL is less then html length set the image as the blank image
+	if (strlen($bpcivi_contacturlarray['values'][0]['image_URL']) < 4) {
 		$bpcivi_img = get_site_url()."/wp-content/plugins/buddypress/bp-core/images/mystery-man.jpg";
 	} else {
 		$bpcivi_img = $bpcivi_contacturlarray['values'][0]['image_URL'];
 	}
-
-// Echo the Image Url - Diagnostics
-//	echo "<p> Contact Fields Information: </p>";
-//	echo "<pre>";
-//		print_r($bpcivi_contacturlarray['values'][0]['image_URL']);
-//	echo "</pre>";
-//	echo "<p> </p>";
-
 // Form for the url inside of DIMs
 	echo "<br>";
 	echo "<div id='bpcivi-editphotoform'>";
 		echo "<h2> Membership Photo </h2>";
 			echo "<p> Insert an image for your photo ID card.  The photo here is seperate from your avatar image. </p>";
 			echo "<p> Note: All images must be less than 7MB, Print Ready, and either a jpg, jpeg, gif, or png.  </p>";
-		echo "<img src=" . $bpcivi_img . ' style="width:150px; margin-bottom:10px;">';
-			//echo '<form action="" method="post" enctype="multipart/form-data">';
-			echo '<form action="' . site_url() . "/wp-content/plugins/civi-prof/postfile.php" . '" method="post" enctype="multipart/form-data">';
-			echo '<input type="hidden" name="hvurls" value=' . curPageURL() . '>';
+				if ($_FILES['file']['size'] < 7000000) {
+					echo " File is too large - Upload another Image";  }
+		echo "<img src=" . $bpcivi_img . '" style="width:150px; margin-bottom:10px;">';
+			echo '<form action="" method="post" enctype="multipart/form-data">';
 			echo '<input type="hidden" name="bprof_cid" value=' . $bprof_cid . '>';
-			echo '<input type="hidden" name="bprof_url" value=' . get_site_url() . '>';
 			echo '<br>';
-			echo "File:" . '<input type="file" name="file" id="file">';
+			echo "Image File:" . '<input type="file" name="file" id="file">';
 			echo '<input type="submit">';
 		echo "</form>";
 	echo "</div>";
-
-// Posting Information of image
-// Insert posting information here
-
-
-//} //If file is send end
-
-//	echo "<p> Contact Fields Information: </p>";
-//	echo "<pre>";
-//		print_r(get_defined_vars());
-//	echo "</pre>";
-//	echo "<p> </p>";
-
 echo '</div>';
 
 
