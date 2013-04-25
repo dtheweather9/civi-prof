@@ -28,6 +28,7 @@ function bpcivi_image_page() {
 		}
 
 function bpcivi_photonavpage() {
+/*
 //Post Section
 
 //Include statements
@@ -129,6 +130,13 @@ echo '</div>';
 
 
 }
+*/
+echo "the page is here";
 
+echo '<form action="civiphotopost.php" enctype="multipart/form-data" method="post">';
+echo "<p>Photo</p>";
+echo '<input name="image" size="30" type="file">';
+echo '<input name="upload" type="submit" value="Upload">';
+echo '</form>';
 
-?>
+}
