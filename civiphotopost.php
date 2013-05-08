@@ -1,5 +1,5 @@
 <?php
-if (isset($_POST["upload"])) {
+/*if (isset($_POST["upload"])) {
 	//Get the file information
 	$userfile_name = $_FILES["image"]["name"];
 	$userfile_tmp = $_FILES["image"]["tmp_name"];
@@ -43,3 +43,4 @@ if (isset($_POST["upload"])) {
 		exit();
 	}
 }
+*/
