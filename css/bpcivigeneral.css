@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+
+#bpcivi_diag {
+background-color: gray;
+border: 5px solid;
+border-color: blue;
+padding: 5px;
+margin-top: 30px;
+}
