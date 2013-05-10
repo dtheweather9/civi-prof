@@ -45,7 +45,7 @@ function bpcivi_addphotonav() {
 	$bpcivi_photonavparent_url = trailingslashit( $bp->displayed_user->domain . 'profile' );
 	$bpcivi_photonavdefaults = array(
 		'name'            => 'Member Image', // Display name for the nav item
-		'slug'            => 'photo', // URL slug for the nav item
+		'slug'            => 'membphoto', // URL slug for the nav item
 		'parent_slug'     => 'profile', // URL slug of the parent nav item
 		'parent_url'      => $bpcivi_photonavparent_url, // URL of the parent item
 		'item_css_id'     => bpcivi_imagecss, // The CSS ID to apply to the HTML of the nav item
@@ -55,11 +55,18 @@ function bpcivi_addphotonav() {
 	);
 
 bp_core_new_subnav_item($bpcivi_photonavdefaults);
-add_action('bp_template_content', 'bpcivi_photonavpage');
+add_action('bp_template_content', 'bpcivi_image_page_content');
 }
 
 function bpcivi_image_page() {
 	bp_core_load_template( 'members/single/plugins' ); //Loads general members/single/plugins template
+}
+
+function bpcivi_image_page_content() {
+	global $bp;
+	if ($bp->current_action == 'membphoto' ) {  //If the Action 
+		bpcivi_photonavpage();  
+	}
 }
 
 function bpcivi_photonavpage() {
@@ -70,7 +77,7 @@ function bpcivi_photonavpage() {
 		$config = CRM_Core_Config::singleton();
 	//Control Settings, Location, and Variable
 		$bpcivi_filelocation = 'wp-content/plugins/files/civicrm/custom/';
-		$bpcivi_filetime = microtime();
+		$bpcivi_memimgsize = 400;
 	//Get Civicrm Contact ID
 		$bpcivi_edituserparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
 		  'uf_id' => get_current_user_id(),);
@@ -80,12 +87,16 @@ function bpcivi_photonavpage() {
 		$bpcivi_photocontactparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
   			'id' => $bpcivi_editphotocid,);
   		$bpcivi_photocontactresult = civicrm_api('Contact', 'getsingle', $bpcivi_photocontactparams);
+  		$bpcivi_filename = $bpcivi_editphotocid;
+  		if (strlen($bpcivi_filename) < 1) {
+  			$bpcivi_filename = rand(900000,999999);
+  		}
 //Display and Operational Decisions
 	if (isset($_POST["upload"])) {  //Go into loop if its a new picture
 		$bpcivi_allowedExts = array("jpg", "jpeg", "gif", "png","JPG","JPEG","GIF", "PNG");
 		$bpcivi_extension = end(explode(".", $_FILES['image']['name']));
 		if ((($_FILES['image']['type'] == "image/gif")
-		|| ($_FILES['image']['type'] == "image/jpeg")
+			|| ($_FILES['image']['type'] == "image/jpeg")
 			|| ($_FILES['image']['type'] == "image/png")
 			|| ($_FILES['image']['type'] == "image/pjpeg"))
 			&& ($_FILES['image']['size'] < 7000000) //Less than 7MB
@@ -102,38 +113,26 @@ function bpcivi_photonavpage() {
 					echo '<script type="text/javascript" src="' . get_site_url() . '/wp-content/plugins/civi-prof/scripts/jquery.imgareaselect.pack.js"></script>';
 					//Set function for preview window
 					echo '<script type="text/javascript">';
+						//TODO: Add Preview Window
 					echo '</script>';
-//Print Image
-echo '<script type="text/javascript">';
-print <<<EJEND
-
-$(document).ready(function () {
-	$('#tempimg').imgAreaSelect({
-		onSelectEnd: function (img, selection) {
-			$('input[name="x1"]').val(selection.x1);
-			$('input[name="y1"]').val(selection.y1);
-			$('input[name="x2"]').val(selection.x2);
-			$('input[name="y2"]').val(selection.y2);            
-		}, aspectRatio: '4:3', handles: true
-	});
-});
-
-EJEND;
-echo '</script>';				
-				
+		//Print Image
+		$bpcivi_script1=file_get_contents(__DIR__ . "/scripts/inlineimg.html");
+		echo $bpcivi_script1;
 		//Move file
-		$bpcivi_photoURIa =  bpcivi_fs_get_wp_config_path() . $bpcivi_filelocation . $_FILES['image']['name'];
-		move_uploaded_file($_FILES['image']['tmp_name'],$bpcivi_photoURIa);
+		$bpcivi_photoURIa =  bpcivi_fs_get_wp_config_path() . $bpcivi_filelocation . str_replace(" ", "",$_FILES['image']['name']);
+		echo move_uploaded_file($_FILES['image']['tmp_name'],$bpcivi_photoURIa);
 		//Form
 		echo '<form action="" enctype="multipart/form-data" method="post">';
-		echo "<p>Photo 2</p>";
-		echo '<img id="tempimg" src="' . get_site_url() ."/" . $bpcivi_filelocation . $_FILES['image']['name'] . '" width="400">';
+		echo "<p><h3>Crop Image</h3></p>";
+		echo "<p>Select the Area on your image which you would like to use for your membership card image</p>";
+		echo '<img id="tempimg" src="' . get_site_url() ."/" . $bpcivi_filelocation . str_replace(" ", "",$_FILES['image']['name']) . '" width="' . $bpcivi_memimgsize . '">';
 		echo '<input type="hidden" name="siteid" value=' . curPageURLphoto() . '>';
 		echo '<input type="hidden" name="x1" value="" />';
 		echo '<input type="hidden" name="y1" value="" />';
 		echo '<input type="hidden" name="x2" value="" />';
 		echo '<input type="hidden" name="y2" value="" />';
-		echo '<input type="hidden" name="bpfilename" value="' . $_FILES['image']['name'] . '" />';
+		echo '<input type="hidden" name="bpfilename" value="' . str_replace(" ", "",$_FILES['image']['name']) . '" />';
+		echo '<input type="hidden" name="bpfiletype" value="' . $_FILES['image']['type'] . '" />';
 		echo '<input name="upload2" type="submit" value="Upload">';
 		echo '</form>';
 				}
@@ -151,22 +150,59 @@ echo '</script>';
 		$bpcivi_photoURIa =  bpcivi_fs_get_wp_config_path() . $bpcivi_filelocation . $POST['bpfilename'];
 		$bpcivi_imagewidth = $_POST['x2'] - $_POST['x1'];
 		$bpcivi_imageheight = $_POST['y2'] - $_POST['y1'];
-		
-		switch( $_FILES['image']['type']) {
-			case 'image/png': $bpcivi_img = imagecreatefrompng($file);
+		$bpcivi_photofile = get_site_url() . "/" . $bpcivi_filelocation . $_POST['bpfilename'];
+		switch( $_POST['bpfiletype']) {
+			case 'image/png': $bpcivi_img = imagecreatefrompng($bpcivi_photofile);
 			break;
-			case 'image/jpeg': $bpcivi_img = imagecreatefromjpeg($file);
+			case 'image/jpeg': $bpcivi_img = imagecreatefromjpeg($bpcivi_photofile);
 			break;
-			case 'image/pjpeg': $bpcivi_img = imagecreatefromjpeg($file);
+			case 'image/pjpeg': $bpcivi_img = imagecreatefromjpeg($bpcivi_photofile);
 			break;
-			case 'image/gif': $bpcivi_img = imagecreatefromgif($file);
+			case 'image/gif': $bpcivi_img = imagecreatefromgif($bpcivi_photofile);
 			break;
 			//default: die();  
-			}	
+			}
+		switch( $_POST['bpfiletype']) {
+			case 'image/png': $bpcivi_fileend = ".png";
+			break;
+			case 'image/jpeg': $bpcivi_fileend = ".jpeg";
+			break;
+			case 'image/pjpeg': $bpcivi_fileend = ".jpeg";
+			break;
+			case 'image/gif': $bpcivi_fileend = ".gif";
+			break;
+			//default: die();  
+			}
+			$bpcivi_cropcanvas = imagecreatetruecolor($bpcivi_imagewidth,$bpcivi_imageheight);
+			list($bpcivi_currentwidth, $bpcivi_currentheight) = getimagesize($bpcivi_photofile);
+			//Rescale X and Y when the image is a different width
+				$bpcivi_newimgX = $bpcivi_currentwidth/$bpcivi_memimgsize*$_POST['x1'];
+				$bpcivi_newimgY = $bpcivi_currentwidth/$bpcivi_memimgsize*$_POST['y1'];
+			//Rescale the image
+			imagecopyresampled($bpcivi_cropcanvas,$bpcivi_img, 0,0,$bpcivi_newimgX, $bpcivi_newimgY, $bpcivi_imagewidth, $bpcivi_imageheight,$bpcivi_currentwidth/$bpcivi_memimgsize*$bpcivi_imagewidth, $bpcivi_currentwidth/$bpcivi_memimgsize*$bpcivi_imageheight);
+			$bpcivi_photofileend = $bpcivi_photoURIa . $bpcivi_filename . $bpcivi_fileend;
+			$bpcivi_photourlend = get_site_url() ."/" . $bpcivi_filelocation . $bpcivi_filename . $bpcivi_fileend;
+		switch( $_POST['bpfiletype']) {
+			case 'image/png': imagepng($bpcivi_cropcanvas, $bpcivi_photofileend, 5);
+			break;
+			case 'image/jpeg': imagejpeg($bpcivi_cropcanvas, $bpcivi_photofileend, 100);
+			break;
+			case 'image/pjpeg': imagejpeg($bpcivi_cropcanvas, $bpcivi_photofileend, 100);
+			break;
+			case 'image/gif': imagegif($bpcivi_cropcanvas, $bpcivi_photofileend);
+			break;
+			//default: die();  
+			}
+			//Write new file as Civicrm URL
+			$bpcivi_photoupdateparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
+				'id' => $bpcivi_editphotocid,'image_URL' => $bpcivi_photourlend);
+			$bpcivi_imgupdate = civicrm_api('Contact', 'update', $bpcivi_photoupdateparams);				
+		
+		echo '<p><h3>Your Membership Photo has been updated:</h3></p><img src = "' . $bpcivi_photourlend . '">';
 		} // End 'Upload2' loop
 		
-	//If Image URL is blacnk set the image as the blank image
-if (!isset($_POST['upload2']) || !isset($_POST['upload']) ) {
+//If Image URL is blank set the image as the blank image
+	if (!(isset($_POST['upload2']) || isset($_POST['upload']) )) {
 		if (strlen($bpcivi_photocontactresult['image_URL']) < 4) {
 			$bpcivi_img = get_site_url()."/wp-content/plugins/buddypress/bp-core/images/mystery-man.jpg";
 			   } else {
@@ -174,17 +210,24 @@ if (!isset($_POST['upload2']) || !isset($_POST['upload']) ) {
 			   } 
 		//Display the image
 		echo '<div id="bpcivi_memberimage">';
+		echo "<p><h3>Your Current Membership Photo: </h3></p>";
 		echo '<img src="' . $bpcivi_img . '" width="150">';
-		echo "</div>";
+		echo "</div><p></p>";
 		//Display the form
+		echo "<p>You can upload up a 7 MB File to the system of either JPEG, PNG, or GIF format.  You will be able to crop the image in this menu.</p>";
 		echo '<form action="" enctype="multipart/form-data" method="post">';
-		echo "<p>Photo</p>";
 		echo '<input name="image" size="30" type="file">';
 		echo '<input type="hidden" name="siteid" value=' . curPageURLphoto() . '>';
-		echo '<input name="upload" type="submit" value="Upload">';
+		echo "Upload New Photo: " .'<input name="upload" type="submit" value="Upload">';
 		echo '</form>';
+		
 	}
-//Diagnostics		
+//Diagnostics	
+/*	
+		//Load in CSS for diagnostics
+			echo '<link rel="stylesheet" type="text/css" href="' . get_site_url() . '/wp-content/plugins/civi-prof/css/bpcivigeneral.css" />';
+		//Continue Dignostics
+		echo '<div id="bpcivi_diag">';
 		echo "Diagnostics: <br>";
 		echo "_FILES: ";
 		echo "<pre>";
@@ -194,13 +237,16 @@ if (!isset($_POST['upload2']) || !isset($_POST['upload']) ) {
 		echo "<pre>";
 		print_r($_POST);
 		echo "</pre>";
-echo "the page is here";
-echo "<p>" . $bpcivi_photoURIa . "</p>";
-echo "New Image is this: ";
-echo '<img src = "' . get_site_url() ."/" . $bpcivi_filelocation . $_FILES['image']['name'] . '">';
-
-echo "The Single Contact: ";
-echo "<pre>";
-print_r($bpcivi_photocontactresult['image_URL']);
-echo "</pre>";
+	echo "the page is here";
+	echo "<p>" . $bpcivi_photoURIa . "</p>";
+	echo "New Image is this: ";
+	echo '<img src = "' . get_site_url() ."/" . $bpcivi_filelocation . $_FILES['image']['name'] . '">';
+	
+	echo "The Single Contact: ";
+	echo "<pre>";
+	print_r($bpcivi_photocontactresult['image_URL']);
+	echo "</pre>";
+	echo "URI Location for Image: " . $bpcivi_photoURIa;
+	echo "</div>";
+*/	
 }
