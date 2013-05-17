@@ -3,7 +3,7 @@
 Plugin Name: Buddypress Civicrm Syncs
 Plugin URI: http://github.com/dtheweather9/civi-prof/
 Description: A plugin to connect Civicrm and Buddypress
-Version: 0.0125
+Version: 0.02
 Author: Dan Pastuf
 Author URI: http://www.danpastuf.com
 License: GPL2
@@ -15,6 +15,9 @@ require_once(ABSPATH . 'wp-content/plugins/civi-prof/profileedit.php');
 
 //Add Image Edit Sub Navigation to the Profile
 require_once(ABSPATH . 'wp-content/plugins/civi-prof/civieditphoto.php');
+
+//Add Update information to chapter
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/civigroupupdateinfo.php');
 
 function bpcivi_display_prof() {
 //echo "this is the content that takes place after the profile";
@@ -40,14 +43,11 @@ function curPageURL() {
 	//$bpprof_baseurl = str_replace("/wp-content/plugins/bcivi-prof","", getcwd());
 	//include_once($bpprof_baseurl . "/wp-content/plugins/civi-prof/civifriend.php");
 
-
-
 //Add menu section for the general options
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');
 require_once(ABSPATH . 'wp-content/plugins/civi-prof/civigenmenu.php');
 require_once(ABSPATH . WPINC . '/pluggable.php');
 add_options_page(__('Buddypress Civicrm General Settings','menu-bpcivi'), __('Bp-Civi General','menu-bpcivi'), 'manage_options', 'bpcivisettings', 'bpcivi_settings_page');
-
 
 //Add menu section for the groups page:
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');
@@ -59,7 +59,7 @@ add_options_page(__('Buddypress Civicrm Group Settings','menu-bpcivigroup'), __(
 add_action('bp_after_group_manage_members_admin','bpcivi_adminmembers');
 
 function bpcivi_adminmembers() {
-echo "<p> This is where the membership list of the organization can go.</p>";
+//echo "<p> This is where the membership list of the organization can go.</p>";
 }
 
 //Installation and Activation Information,as well as uninstallation information
