@@ -5,15 +5,22 @@ add_action('bp_init', 'bpcivi_addgroupeditnav1');
 
 function bpcivi_addgroupeditnav1() {
 if ( class_exists( 'BP_Group_Extension' ) ) { // Recommended, to prevent problems during upgrade or when Groups are disabled
- 
+  //Run to find out if a chapter
+ 	global $wpdb;
+	global $bp;
+ 	$bpcivi_ck_currgroup = $bp->groups->current_group->id;
+ 	if(is_numeric($bpcivi_ck_currgroup)) { //Check if the group is set
+ 		$bpcivi_ck_querytext = 'SELECT * FROM `wp_bpcivi_groupsync` WHERE `buddypress_group` =' . $bpcivi_ck_currgroup;
+		$bpcivi_ck_settinggroups = $wpdb->get_results($bpcivi_ck_querytext);
+ 	}
     class BPCivigroupedit extends BP_Group_Extension {
  		 function __construct() {
         	$this->name = 'Edit Chapter Info';
             $this->slug = 'bpcivi-groupedit';
-            $this->create_step_position = 2;
             $this->nav_item_position = 2;
             $this->visibility = 'private';
             $this->enable_nav_item = false;
+            $this->enable_create_step = false;
 		}
         /**
          * The content of the My Group Extension tab of the group admin
@@ -149,63 +156,8 @@ if ( class_exists( 'BP_Group_Extension' ) ) { // Recommended, to prevent problem
         }
 
 }
-bp_register_group_extension( 'BPCivigroupedit' );
+if(count($bpcivi_ck_settinggroups) > 0) { //Make it so that the group exension is only used for chapter
+	bp_register_group_extension( 'BPCivigroupedit' );
 }
 }
-
-/* //Currently Hidden as it dosn't work
-add_action('bp_init', 'bpcivi_addgroupeditnav');
-
-function bpcivi_addgroupeditnav() {
-//Add Array
-  global $bp;
-	$bpcivi_groupeditparent_url = trailingslashit( $bp->canonical_stack->base_url . 'admin' );
-	//$bpcivi_groupeditparent_url = trailingslashit( $bp->groups->current_group->url . 'profile' );
-	$bpcivi_groupeditdefaults = array(
-		'name'            => 'Group Edit', // Display name for the nav item
-		'slug'            => 'gedit', // URL slug for the nav item
-		'parent_slug'     => 'admin', // URL slug of the parent nav item
-		'parent_url'      => $bpcivi_groupeditparent_url, // URL of the parent item
-		'item_css_id'     => bpcivi_imagecss, // The CSS ID to apply to the HTML of the nav item
-		'user_has_access' => true,  // Can the logged in user see this nav item?
-		'position'        => 90,    // Index of where this nav item should be positioned
-		'screen_function' => bpcivi_groupedit_page, // The name of the function to run when clicked
-	);
-
-bp_core_new_subnav_item($bpcivi_groupeditdefaults);
-add_action('bp_template_content', 'bpcivi_groupedit_page_content');
 }
-
-function bpcivi_groupedit_page() {
-	bp_core_load_template( 'members/single/plugins' ); //Loads general members/single/plugins template
-}
-
-function bpcivi_groupedit_page_content() {
-	global $bp;
-	if ($bp->current_action == 'gedit' ) {  //If the Action 
-		bpcivi_groupeditnavpage();  
-	}
-}
-
-function bpcivi_groupeditnavpage() {
-	global $bp;
-	
-	echo "This is the group image nav page<p>";
-	echo "Parent URL: " . $bp->loggedin_user->domain . $bp->groups->slug . '/' . '<br>';
-	echo "Parent Slug: " . $bp->groups->slug . '<br>';
-   	
-
-	echo "<pre>";
-	print_r($bp);
-	echo "<pre>";
-}
-
-function bpcivi_groupedit_test() {
-	global $bp;
-	echo "<pre>";
-	print_r($bp);
-	echo "<pre>";
-}
-add_action('bp_after_group_admin_content', 'bpcivi_groupedit_test');
-add_action('bp_after_profile_loop_content', 'bpcivi_groupedit_test');//Just for Profile Check
-*/
