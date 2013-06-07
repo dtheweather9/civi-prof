@@ -1,10 +1,9 @@
 <?php
-  	$bpprof_baseurl = str_replace("/wp-content/plugins/civi-prof","", getcwd());
-		include_once($bpprof_baseurl . '/wp-blog-header.php');
 	add_action('bpcivi_updatefriends_hook','bpcivi_updategroups()');
 	function bpcivi_updategroups() {
 //Include Files
-	include_once(ABSPATH  . '/wp-blog-header.php');
+	$civiprof_baseurl = str_replace("/wp-content/plugins/civi-prof","", getcwd());
+	include_once($civiprof_baseurl . '/wp-blog-header.php');
 	include_once(ABSPATH  . 'wp-content/plugins/civicrm/civicrm.settings.php');
 	include_once(ABSPATH  . 'wp-content/plugins/civicrm/civicrm/CRM/Core/Config.php');
 	include_once(ABSPATH  . 'wp-content/plugins/civicrm/civicrm/civicrm.config.php');

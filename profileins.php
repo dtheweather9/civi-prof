@@ -13,6 +13,12 @@ License: GPL2
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');
 require_once(ABSPATH . 'wp-content/plugins/civi-prof/profileedit.php');
 
+//Add Group Sync
+//require_once(ABSPATH . 'wp-content/plugins/civi-prof/civigroupsync.php');
+
+//Add Friend Sync
+//require_once(ABSPATH . 'wp-content/plugins/civi-prof/civifriend.php');
+
 //Add Image Edit Sub Navigation to the Profile
 require_once(ABSPATH . 'wp-content/plugins/civi-prof/civieditphoto.php');
 
