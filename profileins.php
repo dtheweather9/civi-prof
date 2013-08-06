@@ -19,6 +19,9 @@ require_once(ABSPATH . 'wp-content/plugins/civi-prof/profileedit.php');
 //Add Friend Sync
 //require_once(ABSPATH . 'wp-content/plugins/civi-prof/civifriend.php');
 
+//Add Friend Sync Hook
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/civibp_friendhooks.php');
+
 //Add Image Edit Sub Navigation to the Profile
 require_once(ABSPATH . 'wp-content/plugins/civi-prof/civieditphoto.php');
 
