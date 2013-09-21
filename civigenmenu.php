@@ -43,37 +43,54 @@ echo '<div id=bpciviopts">';
 echo '<div id="bpcivigroupmenu" style="min-width: 475px;float:left">';
 //Need to include settings for:
 	// User page
-	$bpcivi_profilepageoptionsparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest',
-	  'sequential' => 1, );
-	$bpcivi_profilepageoptionsresult = civicrm_api('Contact', 'getfields', $bpcivi_profilepageoptionsparams);
+		//$bpcivi_profilepageoptionsparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest',
+		//  'sequential' => 1, );
+		//$bpcivi_profilepageoptionsresult = civicrm_api('Contact', 'getfields', $bpcivi_profilepageoptionsparams);
 	//Run through each type and identify in form
-	echo '<form action="" method="post">' . 'Example ID: <input type="text" name="Exnumb" value="2">' . '<table border="1">';
-	echo '<tr><td>' . "Form<br>Number" . '</td><td>' . "Is<br>Custom?" . '</td><td>' . "Form Name" . '</td><td>' . "Use Field?" . '</td></tr>';
-	for ($i=0;$i<count($bpcivi_profilepageoptionsresult['values']);$i++) {
-	echo '<tr><td>';
-		echo $i . '</td><td>';
-		if (empty($bpcivi_profilepageoptionsresult['values'][$i]['title'])) {
-			echo ' Yes </td><td>';			
-			$displayformitem = $bpcivi_profilepageoptionsresult['values'][$i]['label'];
-			$displayformitemarr[$i] = str_replace(" ","_",$displayformitem);
-			echo $displayformitem;
-		} else {
-			echo '</td><td>';
-			$displayformitem =  $bpcivi_profilepageoptionsresult['values'][$i]['title'];
-			$displayformitemarr[$i] = str_replace(" ","_",$displayformitem);
-			echo $displayformitem;
-		}
-	echo '</td><td>';
-		if ($bpcivi_profarr[$displayformitemarr[$i]] == 1) {		
-			echo '<input type="checkbox" name="' . $displayformitem . '" value="1" checked></td></tr>';
-		} else {
-			echo '<input type="checkbox" name="' . $displayformitem . '" value="1" ></td></tr>';
-		}
-	//Hidden Value
-		//echo '<input type="hidden" value="' . $displayformitem . '" name="' . $i . '" ></td></tr>';
-	}
-	echo "</table>";
+	
+		//Set Defaults
+			$default_profile = 1;
+			$default_friends = 0;
+		//Load Settings for civiprof_editprofnum
+    	$profnum = get_option('civiprof_editprofnum');
+    	if($profnum == false) {  //First time or if options are cleared
+	    	update_option('civiprof_editprofnum',$default_profile);
+	    	$profnum = $default_profile;
+    	} 
+    	//Load Settings for civiprof_friendsnum
+    	$friendsnum = get_option('civiprof_friendsnum');
+    	if($friendsnum == false) {  //First time or if options are cleared
+	    	update_option('civiprof_friendsnum',$default_friends);
+	    	$friendsnum = $default_friends;
+    	} 
+    	
+    	//Post Response for profnum
+    	if(isset($_POST['profnum'])) { //Organization Post Response
+    		if( get_option('civiprof_editprofnum') !== $_POST['profnum']) {
+    		//New Organiation
+    			update_option('civiprof_editprofnum',$_POST['profnum']);
+    			$profnum = get_option('civiprof_editprofnum');
+    		} 
+    		
+    	}
+    	//Post Response for friendsnum
+    	if(isset($_POST['friendsnum'])) { //Organization Post Response
+    		if( get_option('civiprof_friendsnum') !== $_POST['friendsnum']) {
+    		//New Organiation
+    			update_option('civiprof_friendsnum',$_POST['friendsnum']);
+    			$friendsnum = get_option('civiprof_friendsnum');
+    		} 
+    		
+    	}	
+	//Form
+	echo "<h2>";
+		echo "Civicrm - Buddypress Syncronization Options";
+	echo "</h2>";
+	echo '<form action="" method="post">';
+	echo 'Civicrm Profile ID for Member Edit: <input type="number" name="profnum" min="1" max="99999" value="' . $profnum . '"><br>';
+	echo 'Relationship used for Friends: <input type="number" name="friendsnum" min="1" max="99999" value="' . $friendsnum . '"><br>';
 	echo '<input type="submit" value="Submit">';
+	
 	echo "</form>";
 echo "</div>";
 echo '<div id=formview" style="float:left;">';

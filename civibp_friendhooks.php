@@ -12,7 +12,7 @@ $bpcivi_emailstring = "Add Friendship:  Friendship ID: " . $bpcivi_friendshipid 
 	include_once(ABSPATH  . 'wp-content/plugins/civicrm/civicrm/civicrm.config.php');
 	$config = CRM_Core_Config::singleton();
 //Define Friend Relationship
-	$bpcivi_friend_relationship = 11;  //This needs to be converted over to use the database value found in wp-options
+	$bpcivi_friend_relationship = get_option('civiprof_friendsnum'); 
 //Loop up Init Friend CID
 	$bpcivifriendinit_params = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
   		'uf_id' => $bpcivi_initfriendwpid,);

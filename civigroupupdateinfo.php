@@ -44,41 +44,6 @@ if ( class_exists( 'BP_Group_Extension' ) ) { // Recommended, to prevent problem
 	//Assign to array from first membership found - oldest set effectively
 		$bpcivi_groupsettings = get_object_vars($bpcivisync_settinggroups[0]);
 	//Form Reaction TODO
-		if (isset($_POST['groupeditsubmit'])) {
-		//Contact Update
-		$bpcivi_groupupdateparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
-		'id' => $bpcivi_groupsettings['orgid'],
-		'organization_name' => $_POST['orgname'],
-		'legal_name' => $_POST['legalname'],
-		'nick_name' =>$_POST['nickname'],
-		);
-		$bpcivi_groupeditpostresult = civicrm_api('Contact', 'create', $bpcivi_groupupdateparams);
-		//Address Update 
-		$bpcivi_groupaddressupdateparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
-		'id' => $_POST['addressid'],
-		'street_address' => $_POST['street1'],
-		'supplemental_address_1' => $_POST['street2'],
-		'supplemental_address_2' => $_POST['street3'],
-		'city' => $_POST['city1'],
-		'geo_code_1' => $_POST['latitude'],
-		'geo_code_2' => $_POST['longitude'],
-		'state_province_id' => $_POST['state'],
-		);
-		$bpcivi_groupaddresseditpostresult = civicrm_api('Address', 'create', $bpcivi_groupaddressupdateparams);
-		//Website Update
-		$bpcivi_groupwebupdateparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
-		'id' => $_POST['webid'],
-		'url' => $_POST['website1'],
-		);
-		$bpcivi_groupwebupdateresult = civicrm_api('Website', 'create', $bpcivi_groupwebupdateparams);
-		
-		/*//Diagnostics
-		echo "Being Sent to API - Address: <pre>";
-		print_r($bpcivi_groupwebupdateresult);
-		echo "<pre>";*/
-		}
-	
-	
 	
 	//Run Query API Against Group
 		$bpcivi_groupeditparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
@@ -115,8 +80,12 @@ if ( class_exists( 'BP_Group_Extension' ) ) { // Recommended, to prevent problem
 		$bpcivi_countriesresultarrkeyd = array_values($bpcivi_countriesresultarr);
 		$bpcivi_countriesresultarrkeys = array_keys($bpcivi_countriesresultarr);
 	//Display Form
+		//echo plugins_url() . "/civi-prof/posts/groupupdateinfopost.php" . "<br>";
 		echo '<div id="bpcivigroupeditform">';
 		echo '<form action="" method="post">';
+		echo '</form>';
+		echo '<form action="' . plugins_url() . "/civi-prof/posts/groupupdateinfopost.php" . '" method="post">';
+		echo '<input type="hidden" name="orgid" value="' . $bpcivi_groupsettings['orgid'] . '">';
 		echo '<input type="hidden" name="addressid" value="' . $bpcivi_groupeditresult['values'][0]['address_id'] . '">';
 		echo '<input type="hidden" name="webid" value="' . $bpcivi_groupeditwebsiteresult['values'][0]['id'] . '">';
 		echo '<table border=1>';
@@ -141,6 +110,8 @@ if ( class_exists( 'BP_Group_Extension' ) ) { // Recommended, to prevent problem
 		echo '</select></td><tr>';
 		//value="' .$bpcivi_groupedit_state_province_id  . '"
 		echo "<tr><td>" . "Country" . "</td><td>" . '<input type="text" name="orgname" disabled value="' .$bpcivi_countriesresultarr[$bpcivi_groupedit_country_id]  . '"></td><tr>';
+		echo '<input type="hidden" name="infoupdateredirect_url" value="' . get_site_url() . $_SERVER["REQUEST_URI"] . '">';
+		wp_nonce_field("civiprofgroupupdate", "_civiprofgroupupdate");
 		echo '<tr><td colspan="2">' . '<input id="bpedit_submit" type="submit" name="groupeditsubmit" value="Submit">' . '</td></tr>';
 		echo "</table></form>";
 		echo "</div>";
@@ -153,6 +124,7 @@ if ( class_exists( 'BP_Group_Extension' ) ) { // Recommended, to prevent problem
 		print_r($bpcivi_groupeditwebsiteresult);
 		echo "</pre>";        
 		*/
+		//echo "Test Change";
         }
 
 }

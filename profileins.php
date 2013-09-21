@@ -9,10 +9,15 @@ Author URI: http://www.danpastuf.com
 License: GPL2
 */
 
-//Add Profile Edit
-require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-require_once(ABSPATH . 'wp-content/plugins/civi-prof/profileedit.php');
 
+//Add Plugin file
+require_once(ABSPATH . '/wp-admin/includes/plugin.php');
+
+//Add MISC functions
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/civifunctions.php');
+
+//Add Profile Edit
+require_once(ABSPATH . 'wp-content/plugins/civi-prof/profileedit2.php'); //Rebuild of Profile edit
 //Add Friend Sync Hook
 require_once(ABSPATH . 'wp-content/plugins/civi-prof/civibp_friendhooks.php');
 //Add Group Sync Hook
@@ -47,6 +52,9 @@ function curPageURL() {
 //Schedule Running of the civifriends program
 	//$bpprof_baseurl = str_replace("/wp-content/plugins/bcivi-prof","", getcwd());
 	//include_once($bpprof_baseurl . "/wp-content/plugins/civi-prof/civifriend.php");
+
+//Add Notification Widget
+include_once(ABSPATH . 'wp-content/plugins/civi-prof/widget.php');
 
 //Add menu section for the general options
 require_once(ABSPATH . '/wp-admin/includes/plugin.php');

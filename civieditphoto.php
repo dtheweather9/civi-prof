@@ -39,6 +39,10 @@ function bpcivi_fs_get_wp_config_path()
 
 add_action('bp_init', 'bpcivi_addphotonav');
 
+function bpcivi_image_page() {
+	bp_core_load_template( 'members/single/plugins' ); //Loads general members/single/plugins template
+}
+
 function bpcivi_addphotonav() {
 //Add Array
   global $bp;
@@ -48,7 +52,7 @@ function bpcivi_addphotonav() {
 		'slug'            => 'membphoto', // URL slug for the nav item
 		'parent_slug'     => 'profile', // URL slug of the parent nav item
 		'parent_url'      => $bpcivi_photonavparent_url, // URL of the parent item
-		'item_css_id'     => bpcivi_imagecss, // The CSS ID to apply to the HTML of the nav item
+		//'item_css_id'     => bpcivi_imagecss, // The CSS ID to apply to the HTML of the nav item
 		'user_has_access' => true,  // Can the logged in user see this nav item?
 		'position'        => 90,    // Index of where this nav item should be positioned
 		'screen_function' => bpcivi_image_page, // The name of the function to run when clicked
@@ -58,9 +62,7 @@ bp_core_new_subnav_item($bpcivi_photonavdefaults);
 add_action('bp_template_content', 'bpcivi_image_page_content');
 }
 
-function bpcivi_image_page() {
-	bp_core_load_template( 'members/single/plugins' ); //Loads general members/single/plugins template
-}
+
 
 function bpcivi_image_page_content() {
 	global $bp;
@@ -82,7 +84,7 @@ function bpcivi_photonavpage() {
 		$bpcivi_edituserparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
 		  'uf_id' => get_current_user_id(),);
 		$bpcivi_edituserresult = civicrm_api('UFMatch', 'get', $bpcivi_edituserparams);
-		$bpcivi_editphotocid = $bpcivi_edituserresult['values'][min(array_keys($bpcivi_edituserresult['values']))]['contact_id'];
+		$bpcivi_editphotocid = $bpcivi_edituserresult['values'][0]['contact_id'];
 	//Get Civicrm Contact info
 		$bpcivi_photocontactparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
   			'id' => $bpcivi_editphotocid,);
@@ -199,6 +201,11 @@ function bpcivi_photonavpage() {
 			$bpcivi_imgupdate = civicrm_api('Contact', 'update', $bpcivi_photoupdateparams);				
 		
 		echo '<p><h3>Your Membership Photo has been updated:</h3></p><img src = "' . $bpcivi_photourlend . '">';
+	//	$bpcivi_photofilejpeg = $bpcivi_photoURIa . $bpcivi_filename . ".jpeg";
+	//	imagejpeg($bpcivi_cropcanvas, $bpcivi_photofilejpeg, 100);
+				$current_user = wp_get_current_user();
+				$user_photo = update_user_meta( $current_user->ID, "civiprof_photoset", true );
+		imagedestroy($bpcivi_cropcanvas);
 		} // End 'Upload2' loop
 		
 //If Image URL is blank set the image as the blank image
