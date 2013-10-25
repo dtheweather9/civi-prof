@@ -52,7 +52,7 @@ function civibp_groupshook($user_login, $user) {
 				$checkgroups[$i] = $bpcivi_currentusergroups['groups'][$i];
 			} 
 		}
-		$checkgroups = array_values($checkgroups);
+		$checkgroups = @array_values($checkgroups);
 		
 		for($i=0;$i<count($checkgroups);$i++) {
 			//Use bpgroupstomembertype and checkgroups to check if membership if valid

@@ -67,6 +67,15 @@ function bpcivi_editprof3() {
 					'id' => $_POST['address_id'],	);
 				$bpcivi_addressvaluesresult = civicrm_api('Address', 'getsingle', $params);
 				$bpcivi_addressvaluesresult = array_keys($bpcivi_addressvaluesresult);
+				
+				$params = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,);
+				$bpcivi_addressfieldsresult = civicrm_api('Address', 'getfields', $params);
+				
+				for ($a = 0; $a < count($bpcivi_addressfieldsresult['values']); $a++) {
+					$bpcivi_addressfieldresultnames[$a] = $bpcivi_addressfieldsresult['values'][$a]['name'];
+				}
+				$bpcivi_addressvaluesresult = array_merge($bpcivi_addressvaluesresult, $bpcivi_addressfieldresultnames);
+					
 				for($i=0;$i<count($bpcivi_addressvaluesresult);$i++) {
 					$bpcivi_addressupdateprep[$bpcivi_addressvaluesresult[$i]] = $_POST[$bpcivi_addressvaluesresult[$i]];
 				}
@@ -156,7 +165,9 @@ function bpcivi_editprof3() {
 		echo "<td>";
 			echo $bpcivi_uffieldresult[$i]['label'];
 		echo "</td>";
-		if($bpcivi_uffieldresult[$i]['field_name'] == "gender") {
+		//Diagnistic
+			//echo "<td>" . $bpcivi_uffieldresult[$i]['field_name'] . "</td>";
+		if($bpcivi_uffieldresult[$i]['field_name'] == "gender_id") {
 			echo "<td>";
 			for ($j=0; $j<count($bpcivi_genderresult); $j++) {
 				if ($bpcivi_contactresult['gender_id'] == $bpcivi_genderresult[$j]['value']) { //Selected

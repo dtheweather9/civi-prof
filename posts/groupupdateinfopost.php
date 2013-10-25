@@ -1,6 +1,7 @@
 <?php
 //Include Files	
 	$civiprof_baseurl = str_replace("/wp-content/plugins/civi-prof/posts","", getcwd());
+	$civiprof_baseurl = str_replace("\wp-content\plugins\civi-prof\posts","", $civiprof_baseurl);
 	include_once($civiprof_baseurl . '/wp-blog-header.php');
 	include_once(ABSPATH  . '/wp-blog-header.php');
 	//WP NONCE check
@@ -51,6 +52,8 @@
 	//	echo "bpcivi_groupwebupdateresult<pre>";
 	//	print_r($bpcivi_groupwebupdateresult);
 	//	echo "<pre>";
-		echo '<meta http-equiv="refresh" content="0;URL= '. $_POST['infoupdateredirect_url'] . '">';
+		$urlredirect = str_replace("/wordpress/wordpress/","/wordpress/", $_POST['infoupdateredirect_url']);
+		$urlredirect = str_replace("wordpress/wordpress/","wordpress/", $urlredirect);
+	echo '<meta http-equiv="refresh" content="0;URL= '. $urlredirect . '">';
   	  }
 	}

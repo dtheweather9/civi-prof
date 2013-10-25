@@ -198,8 +198,15 @@ function bpcivi_photonavpage() {
 			//Write new file as Civicrm URL
 			$bpcivi_photoupdateparams = array('version' => 3,'page' => 'CiviCRM','q' => 'civicrm/ajax/rest','sequential' => 1,
 				'id' => $bpcivi_editphotocid,'image_URL' => $bpcivi_photourlend);
-			$bpcivi_imgupdate = civicrm_api('Contact', 'update', $bpcivi_photoupdateparams);				
+			$bpcivi_imgupdate = civicrm_api('Contact', 'create', $bpcivi_photoupdateparams);				
 		
+		//Diagnostics
+		/*
+		echo "CID: " . $bpcivi_editphotocid . "<br>";
+		echo "bpcivi_imgupdate<pre>";
+		print_r($bpcivi_imgupdate);
+		echo "</pre>";
+		*/
 		echo '<p><h3>Your Membership Photo has been updated:</h3></p><img src = "' . $bpcivi_photourlend . '">';
 	//	$bpcivi_photofilejpeg = $bpcivi_photoURIa . $bpcivi_filename . ".jpeg";
 	//	imagejpeg($bpcivi_cropcanvas, $bpcivi_photofilejpeg, 100);

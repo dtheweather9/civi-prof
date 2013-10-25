@@ -37,7 +37,7 @@ class Civi_Prof_Messages extends WP_Widget {
 			//Discover if member image has been set
 				if($user_photo == false) {
 					$message_text[$iset] = "Membership Photo Not Yet Set";
-					$message_link[$iset] = "http://test2.seds.org/members/" . $current_user->user_login ."/profile/membphoto/";
+					$message_link[$iset] = WP_SITEURL . "/members/" . $current_user->user_login ."/profile/membphoto/";
 					$iset++;
 				}
 		//Display Widget
